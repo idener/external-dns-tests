@@ -294,6 +294,15 @@ func ovhGroupByNameAndType(records []ovhRecord) []*endpoint.Endpoint {
 	return endpoints
 }
 
+func getStrippedRecordName(zone string, ep endpoint.Endpoint) string {
+	// Handle root
+	if ep.DNSName == zone {
+		return ""
+	}
+
+	return strings.TrimSuffix(ep.DNSName, "."+zone)
+}
+
 func newOvhChange(action int, endpoints []*endpoint.Endpoint, zones []string, records []ovhRecord) []ovhChange {
 	zoneNameIDMapper := provider.ZoneIDName{}
 	ovhChanges := make([]ovhChange, 0, countTargets(endpoints))
@@ -317,7 +326,7 @@ func newOvhChange(action int, endpoints []*endpoint.Endpoint, zones []string, re
 					Zone: zone,
 					ovhRecordFields: ovhRecordFields{
 						FieldType: e.RecordType,
-						SubDomain: strings.TrimSuffix(e.DNSName, "."+zone),
+						SubDomain: getStrippedRecordName(zone,e),
 						TTL:       ovhDefaultTTL,
 						Target:    target,
 					},
