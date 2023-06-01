@@ -314,7 +314,7 @@ func newOvhChange(action int, endpoints []*endpoint.Endpoint, zones []string, re
 		// Check if the DNSName is a TXT entry and is formed "a-domainname.com" being domainname in the zone list to fix the
 		// TXT entries that are created for the A records on the apex.
 		if (zone == "" && e.RecordType == "TXT") {
-			zone, _ := zoneNameIDMapper.FindZone(strings.TrimPrefix(e.DNSName, "a-")) 
+			zone = zoneNameIDMapper.FindZone(strings.TrimPrefix(e.DNSName, "a-")) 
 		}
 		if zone == "" {
 			if zone == "" {
