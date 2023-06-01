@@ -317,11 +317,14 @@ func newOvhChange(action int, endpoints []*endpoint.Endpoint, zones []string, re
 			zone2, _ := zoneNameIDMapper.FindZone(strings.TrimPrefix(e.DNSName, "a-")) 
 			zone = zone2
 		}
+		// Check now if DNSName is exactly domainname.com or .domainName.com
+		if (zone == "" && strings.Count(e.DNSName, ".") == 1) {
+			zone2, _ := zoneNameIDMapper.FindZone(strings.TrimPrefix(e.DNSName, ".")) 
+			zone = zone2
+		}
 		if zone == "" {
-			if zone == "" {
-				log.Debugf("Skipping record %s because no hosted zone matching record DNS Name was detected", e.DNSName)
-				continue
-			}
+			log.Debugf("Skipping record %s because no hosted zone matching record DNS Name was detected", e.DNSName)
+			continue
 		}
 		
 		for _, target := range e.Targets {
