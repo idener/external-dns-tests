@@ -222,7 +222,7 @@ func (p *OVHProvider) records(ctx *context.Context, zone *string, records chan<-
 	ovhRecords := make([]ovhRecord, len(recordsIds))
 	eg, _ := errgroup.WithContext(*ctx)
 
-	log.Debugf("OVH: Getting records for %s", *zone)
+	log.Debugf("OVH: Getting records for rec: %s", *zone)
 
 	p.apiRateLimiter.Take()
 	if err := p.client.Get(fmt.Sprintf("/domain/zone/%s/record", *zone), &recordsIds); err != nil {
