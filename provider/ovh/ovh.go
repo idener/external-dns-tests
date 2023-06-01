@@ -294,7 +294,7 @@ func ovhGroupByNameAndType(records []ovhRecord) []*endpoint.Endpoint {
 	return endpoints
 }
 
-func getStrippedRecordName(zone string, ep endpoint.Endpoint) string {
+func getStrippedRecordName(zone string, ep *endpoint.Endpoint) string {
 	// Handle root
 	if ep.DNSName == zone {
 		return ""
