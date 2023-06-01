@@ -281,6 +281,7 @@ func ovhGroupByNameAndType(records []ovhRecord) []*endpoint.Endpoint {
 		for _, record := range records {
 			targets = append(targets, record.Target)
 		}
+		log.Infof("RECORDDEBUG: %s / %s / %s ", records[0].SubDomain, records[0].Zone, records[0].FieldType)
 		endpoint := endpoint.NewEndpointWithTTL(
 			strings.TrimPrefix(records[0].SubDomain+"."+records[0].Zone, "."),
 			records[0].FieldType,
