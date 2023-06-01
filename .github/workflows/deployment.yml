@@ -29,8 +29,8 @@ jobs:
           registry: registry.idener.es
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
-          build_file: src/Dockerfile
-          image: it-tools
+          build_file: Dockerfile
+          image: external-dns-tests
           tag: ${{ env.TAG }}
           tag_with_latest: true
           strip_tag_prefix: v
