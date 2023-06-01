@@ -281,7 +281,6 @@ func ovhGroupByNameAndType(records []ovhRecord) []*endpoint.Endpoint {
 		for _, record := range records {
 			targets = append(targets, record.Target)
 		}
-		log.Infof("RECORDDEBUG: %s / %s / %s ", records[0].SubDomain, records[0].Zone, records[0].FieldType)
 		endpoint := endpoint.NewEndpointWithTTL(
 			strings.TrimPrefix(records[0].SubDomain+"."+records[0].Zone, "."),
 			records[0].FieldType,
@@ -312,10 +311,18 @@ func newOvhChange(action int, endpoints []*endpoint.Endpoint, zones []string, re
 
 	for _, e := range endpoints {
 		zone, _ := zoneNameIDMapper.FindZone(e.DNSName)
-		if zone == "" {
-			log.Debugf("Skipping record %s because no hosted zone matching record DNS Name was detected", e.DNSName)
-			continue
+		// Check if the DNSName is a TXT entry and is formed "a-domainname.com" being domainname in the zone list to fix the
+		// TXT entries that are created for the A records on the apex.
+		if (zone == "" && e.RecordType == "TXT") {
+			zone, _ := zoneNameIDMapper.FindZone(strings.TrimPrefix(e.DNSName, "a-")) 
 		}
+		if zone == "" {
+			if zone == "" {
+				log.Debugf("Skipping record %s because no hosted zone matching record DNS Name was detected", e.DNSName)
+				continue
+			}
+		}
+		
 		for _, target := range e.Targets {
 			if e.RecordType == endpoint.RecordTypeCNAME {
 				target = target + "."
